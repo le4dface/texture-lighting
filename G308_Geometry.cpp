@@ -141,12 +141,15 @@ void G308_Geometry::ReadOBJ(const char *filename) {
 			break;
 		case 'f': /* faces : stored value is index - 1 since our index starts from 0, but obj starts from 1 */
 			if (numNorm > 0 && numUV > 0) {
-				sscanf(str, "f %d/%d/%d %d/%d/%d %d/%d/%d", &v1, &t1, &n1, &v2, &t2, &n2, &v3, &t3, &n3);
-			} else if(numNorm > 0 && numUV ==0){
-				sscanf(str, "f %d//%d %d//%d %d//%d", &v1, &n1, &v2, &n2, &v3, &n3);
-			} else if(numUV > 0 && numNorm==0){
-				sscanf(str, "f %d/%d %d/%d %d/%d", &v1, &t1, &v2, &t2, &v3, &t3);
-			} else if(numUV==0 && numNorm==0){
+				sscanf(str, "f %d/%d/%d %d/%d/%d %d/%d/%d", &v1, &t1, &n1, &v2,
+						&t2, &n2, &v3, &t3, &n3);
+			} else if (numNorm > 0 && numUV == 0) {
+				sscanf(str, "f %d//%d %d//%d %d//%d", &v1, &n1, &v2, &n2, &v3,
+						&n3);
+			} else if (numUV > 0 && numNorm == 0) {
+				sscanf(str, "f %d/%d %d/%d %d/%d", &v1, &t1, &v2, &t2, &v3,
+						&t3);
+			} else if (numUV == 0 && numNorm == 0) {
 				sscanf(str, "f %d %d %d", &v1, &v2, &v3);
 			}
 			// Vertex indicies for triangle:
@@ -204,41 +207,41 @@ void G308_Geometry::CreateGLPolyGeometry() {
 	glNewList(m_glGeomListPoly, GL_COMPILE);
 
 	//set polygon mode to fill, opposed to line/wireframe
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-		glBegin(GL_TRIANGLES);
+	glBegin(GL_TRIANGLES);
 
-		int i;
-		unsigned int vi,vj,vk;
-		unsigned int ni,nj,nk;
-		unsigned int ti,tj,tk;
+	int i;
+	unsigned int vi, vj, vk;
+	unsigned int ni, nj, nk;
+	unsigned int ti, tj, tk;
 
-		float texmult = 1.0f;
+	float texmult = 1.0f;
 
-		G308_Point v1, v2, v3;
-		G308_UVcoord t1,t2,t3;
-		//vertexNormal init
-		G308_Normal vertexNormal1, vertexNormal2, vertexNormal3;
-		//for each polygon in our set of data
-		for(i=0; i<m_nNumPolygon; i++) {
+	G308_Point v1, v2, v3;
+	G308_UVcoord t1, t2, t3;
+	//vertexNormal init
+	G308_Normal vertexNormal1, vertexNormal2, vertexNormal3;
+	//for each polygon in our set of data
+	for (i = 0; i < m_nNumPolygon; i++) {
 
-			/*Vertices*/
-			//get each triangle's vertices index in the array of vertices
-			vi = m_pTriangles[i].v1;
-			vj = m_pTriangles[i].v2;
-			vk = m_pTriangles[i].v3;
+		/*Vertices*/
+		//get each triangle's vertices index in the array of vertices
+		vi = m_pTriangles[i].v1;
+		vj = m_pTriangles[i].v2;
+		vk = m_pTriangles[i].v3;
 
-			//get the vertices from array
-			v1 = m_pVertexArray[vi];
-			v2 = m_pVertexArray[vj];
-			v3 = m_pVertexArray[vk];
+		//get the vertices from array
+		v1 = m_pVertexArray[vi];
+		v2 = m_pVertexArray[vj];
+		v3 = m_pVertexArray[vk];
 
-			/*initialise default texture coordinates*/
-			t1 = {0,0};
-			t2 = {0,0};
-			t3 = {0,0};
+		/*initialise default texture coordinates*/
+		t1 = {0,0};
+		t2 = {0,0};
+		t3 = {0,0};
 
-			if(m_nNumUV > 0) {
+		if (m_nNumUV > 0) {
 			/*Texture coordinates*/
 			ti = m_pTriangles[i].t1;
 			tj = m_pTriangles[i].t2;
@@ -248,39 +251,38 @@ void G308_Geometry::CreateGLPolyGeometry() {
 			t2 = m_pUVArray[tj];
 			t3 = m_pUVArray[tk];
 
-			}
-
-			ni = m_pTriangles[i].n1;
-			nj = m_pTriangles[i].n2;
-			nk = m_pTriangles[i].n3;
-
-			vertexNormal1 = m_pNormalArray[ni];
-			vertexNormal2 = m_pNormalArray[nj];
-			vertexNormal3 = m_pNormalArray[nk];
-
-			//set vertices
-			if(m_nNumUV > 0) {
-				glTexCoord2f(t1.u * texmult, t1.v * texmult);
-			}
-			glNormal3f(vertexNormal1.x,vertexNormal1.y,vertexNormal1.z);
-			glVertex3f(v1.x,v1.y,v1.z);
-
-			if(m_nNumUV > 0) {
-				glTexCoord2f(t2.u * texmult, t2.v * texmult);
-			}
-			glNormal3f(vertexNormal2.x,vertexNormal2.y,vertexNormal2.z);
-			glVertex3f(v2.x,v2.y,v2.z);
-
-			if(m_nNumUV > 0) {
-				glTexCoord2f(t3.u * texmult, t3.v * texmult);
-			}
-			glNormal3f(vertexNormal3.x,vertexNormal3.y,vertexNormal3.z);
-			glVertex3f(v3.x,v3.y,v3.z);
-
 		}
 
-		glEnd();
+		ni = m_pTriangles[i].n1;
+		nj = m_pTriangles[i].n2;
+		nk = m_pTriangles[i].n3;
 
+		vertexNormal1 = m_pNormalArray[ni];
+		vertexNormal2 = m_pNormalArray[nj];
+		vertexNormal3 = m_pNormalArray[nk];
+
+		//set vertices
+		if (m_nNumUV > 0) {
+			glTexCoord2f(t1.u * texmult, t1.v * texmult);
+		}
+		glNormal3f(vertexNormal1.x, vertexNormal1.y, vertexNormal1.z);
+		glVertex3f(v1.x, v1.y, v1.z);
+
+		if (m_nNumUV > 0) {
+			glTexCoord2f(t2.u * texmult, t2.v * texmult);
+		}
+		glNormal3f(vertexNormal2.x, vertexNormal2.y, vertexNormal2.z);
+		glVertex3f(v2.x, v2.y, v2.z);
+
+		if (m_nNumUV > 0) {
+			glTexCoord2f(t3.u * texmult, t3.v * texmult);
+		}
+		glNormal3f(vertexNormal3.x, vertexNormal3.y, vertexNormal3.z);
+		glVertex3f(v3.x, v3.y, v3.z);
+
+	}
+
+	glEnd();
 
 	glEndList();
 }
