@@ -19,10 +19,18 @@
 
 #include "define.h"
 #include <GL/glut.h>
+#include <glm/glm.hpp>
+
+struct colorId {
+	int r;
+	int g;
+	int b;
+};
 
 class G308_Geometry
 {
 private:
+
 	// Array for Geometry
 	G308_Point* m_pVertexArray;		// Vertex Array
 	G308_Normal* m_pNormalArray;	// Normal Array
@@ -43,7 +51,16 @@ private:
 
 	GLuint *texture;
 
+
 public:
+
+	char* name; //name of model
+	colorId cid; //color id of object for color picker
+
+	glm::vec3 translation = {0,0,0};
+	glm::vec3 scale = {1,1,1};
+
+
 	G308_Geometry(void);
 	~G308_Geometry(void);
 
@@ -55,4 +72,7 @@ public:
 
 	void RenderGeometry();     // mode : G308_SHADE_POLYGON, G308_SHADE_WIREFRAME
 	void toggleMode(); //Switch between showing filled polygons and wireframes
+
+	void toString();
+
 };

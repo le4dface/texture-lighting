@@ -17,6 +17,7 @@
 #include "G308_ImageLoader.h"
 #include <stdio.h>
 #include <math.h>
+#include <glm/glm.hpp>
 
 G308_Geometry::G308_Geometry(void) {
 	m_pVertexArray = NULL;
@@ -205,85 +206,34 @@ void G308_Geometry::CreateGLPolyGeometry() {
 	// Assign a display list; return 0 if err
 	m_glGeomListPoly = glGenLists(1);
 	glNewList(m_glGeomListPoly, GL_COMPILE);
-
+//	glShadeModel(GL_SMOOTH);
 	//set polygon mode to fill, opposed to line/wireframe
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-	glBegin(GL_TRIANGLES);
-
 	int i;
-	unsigned int vi, vj, vk;
-	unsigned int ni, nj, nk;
-	unsigned int ti, tj, tk;
-
-	float texmult = 1.0f;
-
-	G308_Point v1, v2, v3;
-	G308_UVcoord t1, t2, t3;
-	//vertexNormal init
-	G308_Normal vertexNormal1, vertexNormal2, vertexNormal3;
 	//for each polygon in our set of data
 	for (i = 0; i < m_nNumPolygon; i++) {
-
-		/*Vertices*/
-		//get each triangle's vertices index in the array of vertices
-		vi = m_pTriangles[i].v1;
-		vj = m_pTriangles[i].v2;
-		vk = m_pTriangles[i].v3;
-
-		//get the vertices from array
-		v1 = m_pVertexArray[vi];
-		v2 = m_pVertexArray[vj];
-		v3 = m_pVertexArray[vk];
-
-		/*initialise default texture coordinates*/
-		t1 = {0,0};
-		t2 = {0,0};
-		t3 = {0,0};
-
-		if (m_nNumUV > 0) {
-			/*Texture coordinates*/
-			ti = m_pTriangles[i].t1;
-			tj = m_pTriangles[i].t2;
-			tk = m_pTriangles[i].t3;
-
-			t1 = m_pUVArray[ti];
-			t2 = m_pUVArray[tj];
-			t3 = m_pUVArray[tk];
-
-		}
-
-		ni = m_pTriangles[i].n1;
-		nj = m_pTriangles[i].n2;
-		nk = m_pTriangles[i].n3;
-
-		vertexNormal1 = m_pNormalArray[ni];
-		vertexNormal2 = m_pNormalArray[nj];
-		vertexNormal3 = m_pNormalArray[nk];
-
-		//set vertices
-		if (m_nNumUV > 0) {
-			glTexCoord2f(t1.u * texmult, t1.v * texmult);
-		}
-		glNormal3f(vertexNormal1.x, vertexNormal1.y, vertexNormal1.z);
-		glVertex3f(v1.x, v1.y, v1.z);
-
-		if (m_nNumUV > 0) {
-			glTexCoord2f(t2.u * texmult, t2.v * texmult);
-		}
-		glNormal3f(vertexNormal2.x, vertexNormal2.y, vertexNormal2.z);
-		glVertex3f(v2.x, v2.y, v2.z);
-
-		if (m_nNumUV > 0) {
-			glTexCoord2f(t3.u * texmult, t3.v * texmult);
-		}
-		glNormal3f(vertexNormal3.x, vertexNormal3.y, vertexNormal3.z);
-		glVertex3f(v3.x, v3.y, v3.z);
-
+		glBegin(GL_TRIANGLES);
+			glNormal3f(m_pNormalArray[m_pTriangles[i].n1].x,
+					m_pNormalArray[m_pTriangles[i].n1].y,
+					m_pNormalArray[m_pTriangles[i].n1].z);
+			glVertex3f(m_pVertexArray[m_pTriangles[i].v1].x,
+					m_pVertexArray[m_pTriangles[i].v1].y,
+					m_pVertexArray[m_pTriangles[i].v1].z);
+			glNormal3f(m_pNormalArray[m_pTriangles[i].n2].x,
+					m_pNormalArray[m_pTriangles[i].n2].y,
+					m_pNormalArray[m_pTriangles[i].n2].z);
+			glVertex3f(m_pVertexArray[m_pTriangles[i].v2].x,
+					m_pVertexArray[m_pTriangles[i].v2].y,
+					m_pVertexArray[m_pTriangles[i].v2].z);
+			glNormal3f(m_pNormalArray[m_pTriangles[i].n3].x,
+					m_pNormalArray[m_pTriangles[i].n3].y,
+					m_pNormalArray[m_pTriangles[i].n3].z);
+			glVertex3f(m_pVertexArray[m_pTriangles[i].v3].x,
+					m_pVertexArray[m_pTriangles[i].v3].y,
+					m_pVertexArray[m_pTriangles[i].v3].z);
+		glEnd();
 	}
-
-	glEnd();
-
 	glEndList();
 }
 
@@ -330,7 +280,6 @@ void G308_Geometry::toggleMode() {
 }
 
 void G308_Geometry::RenderGeometry() {
-
 	if (mode == G308_SHADE_POLYGON) {
 		glCallList(m_glGeomListPoly);
 	} else if (mode == G308_SHADE_WIREFRAME) {
@@ -338,5 +287,10 @@ void G308_Geometry::RenderGeometry() {
 	} else {
 		printf("Warning: Wrong Shading Mode. \n");
 	}
+}
 
+void G308_Geometry::toString() {
+	printf("name: %s\n", name);
+	printf("translation: x: %f, y: %f, z:%f\n", translation.x, translation.y, translation.z);
+	printf("scale: x: %f, y: %f, z: %f\n\n", scale.x, scale.y, scale.z);
 }
