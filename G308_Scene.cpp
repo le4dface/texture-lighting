@@ -140,6 +140,7 @@ void loadAllObjects(char** argv) {
 		box->ReadOBJ(argv[6]); // 1) read OBJ function
 		box->CreateGLPolyGeometry(); // 2) create GL Geometry as polygon
 		box->CreateGLWireGeometry(); // 3) create GL Geometry as wireframe
+		//todo refactor?
 		box->cid = {255,255,0};
 		box->name = "box";
 		box->translation = {11,3,3};
@@ -341,24 +342,6 @@ void G308_SetLight()
 	glEnable(GL_LIGHT0);
 }
 
-void updateTransform(int key) {
-	switch (key) {
-	case 27:
-		break;
-	case 100:
-		glRotatef(1.0f,0.0f,1.0f,0.0f);
-		break;
-	case 102:
-		glRotatef(-1.0f,0.0f,1.0f,0.0f);
-		break;
-	case 101:
-		glRotatef(1.0f,1.0f,0.0f,0.0f);
-		break;
-	case 103:
-		glRotatef(-1.0f,1.0f,0.0f,0.0f);
-		break;
-	}
-}
 
 
 void G308_Keyboard(unsigned char key, int x, int y)
