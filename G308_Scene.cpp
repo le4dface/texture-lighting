@@ -72,7 +72,7 @@ void G308_Keyboard(unsigned char key, int x, int y);
 void G308_Mouse(int,int,int,int);
 void G308_Display();
 void G308_Reshape(int,int);
-
+void setShaders();
 
 void loadError(int num) {
 	printf("not enough arguments: %d. requires 7", num);
@@ -170,8 +170,6 @@ void cleanup() {
 
 	glFlush();
 }
-
-
 void checkMinObjects() {
 	//commented out for test
 	if (num_models < 2) {
@@ -179,7 +177,6 @@ void checkMinObjects() {
 		exit(EXIT_FAILURE);
 	}
 }
-
 void checkMaxObjects() {
 	//no more than 4 models
 	if (num_models > 7) {
@@ -187,10 +184,6 @@ void checkMaxObjects() {
 		exit(EXIT_FAILURE);
 	}
 }
-
-
-
-
 int main(int argc, char** argv)
 {
 	cameraRotation.x = 0;
@@ -217,16 +210,13 @@ int main(int argc, char** argv)
 
 	loadAllObjects(argv);
 
-
+	setShaders();
 	glutMainLoop();
 
 	//clean up wavefront objects
 	cleanup();
     return 0;
 }
-
-
-
 G308_Geometry* getSelectedObj() {
 
 	if(strcmp(selected,"sphere") == 0) {
@@ -245,7 +235,6 @@ G308_Geometry* getSelectedObj() {
 	return NULL;
 
 }
-
 void setObjColor(G308_Geometry* obj) {
 	glColor3f(
 			(float)obj->cid.r  / 255.0f,
@@ -253,14 +242,12 @@ void setObjColor(G308_Geometry* obj) {
 			(float)obj->cid.b  / 255.0f
 			);
 }
-
 void colorObject(G308_Geometry* obj) {
 	if(strcmp(selected,obj->name) == 0)
 		glColor3f(1.0,0.0,1.0);
 	else
 		setObjColor(obj);
 }
-
 void translateObject(G308_Geometry* obj) {
 	glTranslatef(
 			obj->translation.x,
@@ -268,7 +255,6 @@ void translateObject(G308_Geometry* obj) {
 			obj->translation.z
 			);
 }
-
 void scaleObject(G308_Geometry* obj) {
 	glScalef(
 		obj->scale.x,
@@ -276,7 +262,6 @@ void scaleObject(G308_Geometry* obj) {
 		obj->scale.z
 		);
 }
-
 void renderSingleObject(G308_Geometry* obj) {
 	glPushMatrix();
 		//translate obj
@@ -289,7 +274,6 @@ void renderSingleObject(G308_Geometry* obj) {
 		obj->RenderGeometry(); //render sphere image
 	glPopMatrix();
 }
-
 void renderAllObjects() {
 	renderSingleObject(sphere);
 	renderSingleObject(bunny);
@@ -298,8 +282,6 @@ void renderAllObjects() {
 	renderSingleObject(table);
 	renderSingleObject(box);
 }
-
-// Display function
 void G308_Display()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -311,7 +293,10 @@ void G308_Display()
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
 
+
+	setShaders();
 	renderAllObjects();
+
 
 	glDisable(GL_NORMALIZE);
 	glDisable(GL_DEPTH_TEST);
@@ -322,7 +307,17 @@ void G308_Display()
 	glutSwapBuffers();
 }
 
-// Reshape function
+/*
+ * GLSL
+ */
+
+void setShaders() {
+
+
+
+}
+
+
 void G308_Reshape(int w, int h)
 {
     if (h == 0) h = 1;
@@ -330,8 +325,6 @@ void G308_Reshape(int w, int h)
 	g_nWinHeight = h;
     glViewport(0, 0, g_nWinWidth, g_nWinHeight);
 }
-
-// Set Light
 void G308_SetLight()
 {
 	glLightfv(GL_LIGHT0, GL_POSITION, direction);
@@ -341,9 +334,6 @@ void G308_SetLight()
 
 	glEnable(GL_LIGHT0);
 }
-
-
-
 void G308_Keyboard(unsigned char key, int x, int y)
 {
 	if(strcmp(selected,"") != 0) {
@@ -410,7 +400,6 @@ void G308_Keyboard(unsigned char key, int x, int y)
     G308_Display();
 	glutPostRedisplay();
 }
-
 void toggleObjects() {
 	sphere->toggleMode(); //toggle each model
 	bunny->toggleMode();
@@ -419,7 +408,6 @@ void toggleObjects() {
 	table->toggleMode();
 	box->toggleMode();
 }
-
 void G308_Mouse(int button, int state, int x, int y){
 
 	if(button == GLUT_LEFT_BUTTON  && state == GLUT_DOWN){
@@ -437,17 +425,16 @@ void G308_Mouse(int button, int state, int x, int y){
 	glutPostRedisplay();
 
 }
-// Set Camera Position
 void G308_SetCamera()
 {
 	glMatrixMode(GL_PROJECTION);
+
 	glLoadIdentity();
 	gluPerspective(G308_FOVY, (double) g_nWinWidth / (double) g_nWinHeight, G308_ZNEAR_3D, G308_ZFAR_3D);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	gluLookAt(eye.x, eye.y, eye.z, focus.x, focus.y, focus.z, 0.0, 1.0, 0.0);
 }
-
 void pickByColor(int x, int y) {
 	//turn off texturing, lighting and fog
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -470,7 +457,6 @@ void pickByColor(int x, int y) {
 
 
 }
-
 void selectByPixel(G308_Geometry* obj, unsigned char * pixel) {
 
 	if ((obj->cid.r) == (pixel[0]) && (obj->cid.g) == (pixel[1])
