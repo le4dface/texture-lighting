@@ -34,7 +34,7 @@ G308_Geometry* torus = NULL; //our seventh model to render
 G308_Geometry* table = NULL; //our fifth model to render
 G308_Geometry* box = NULL; //our sixth model to render
 glm::vec3 cameraRotation;
-glm::vec3 eye = {0.0f, 25.0f, 40.0f};
+glm::vec3 eye = {25.0f, 15.0f, 50.0f};
 glm::vec3 focus = {0.0f, 0.0f, 0.0f};
 
 GLfloat direction[4] = {0.0f, 0.0f, 1.0f, 0.0f}; //light direction for manipulating with mouse
@@ -87,6 +87,8 @@ void loadAllObjects(char** argv) {
 		sphere->CreateGLWireGeometry(); // 3) create GL Geometry as wireframe
 		sphere->cid = {0,200,0};
 		sphere->name = "sphere";
+		sphere->translation = {1,1,15};
+		sphere->scale = {1,1,1};
 	}
 
 	if(num_models > 2) {
@@ -96,6 +98,8 @@ void loadAllObjects(char** argv) {
 		bunny->CreateGLWireGeometry(); // 3) create GL Geometry as wireframe
 		bunny->cid = {200,200,200};
 		bunny->name = "bunny";
+		bunny->translation = {6,1,10};
+		bunny->scale = {1,1,1};
 	}
 	if(num_models > 3) {
 		teapot = new G308_Geometry;
@@ -104,6 +108,8 @@ void loadAllObjects(char** argv) {
 		teapot->CreateGLWireGeometry(); // 3) create GL Geometry as wireframe
 		teapot->cid = {0,50,200};
 		teapot->name = "teapot";
+		teapot->translation = {0,1,2};
+		teapot->scale = {1,1,1};
 	}
 
 	if(num_models > 4) {
@@ -113,6 +119,8 @@ void loadAllObjects(char** argv) {
 		torus->CreateGLWireGeometry(); // 3) create GL Geometry as wireframe
 		torus->cid = {255,0,0};
 		torus->name = "torus";
+		torus->translation = {10,1,14};
+		torus->scale = {1,1,1};
 	}
 
 	if(num_models > 5) {
@@ -122,6 +130,9 @@ void loadAllObjects(char** argv) {
 		table->CreateGLWireGeometry(); // 3) create GL Geometry as wireframe
 		table->cid = {50,0,50};
 		table->name = "table";
+		table->translation = {9,-1,9};
+		table->scale = {1.578, 1.578, 1.578};
+
 	}
 
 	if(num_models > 6) {
@@ -131,6 +142,8 @@ void loadAllObjects(char** argv) {
 		box->CreateGLWireGeometry(); // 3) create GL Geometry as wireframe
 		box->cid = {255,255,0};
 		box->name = "box";
+		box->translation = {11,3,3};
+		box->scale = {0.9, 0.9, 0.9};
 	}
 
 }
